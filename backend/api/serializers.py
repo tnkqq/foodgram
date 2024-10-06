@@ -1,25 +1,27 @@
 import base64
 import re
-
-from django.contrib.auth import authenticate, get_user_model
+from rest_framework import serializers
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
-from rest_framework import serializers, validators
-from rest_framework.authtoken.models import Token
-from rest_framework.exceptions import PermissionDenied, ValidationError
 
-from recipes.models import (Ingredient, Recipe, RecipeIngredient, ShoppingCart,
-                            Subscription, Tag, User)
+from recipes.models import (
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    Tag,
+    User,
+)
 
 
 class FavoriteAndShoppingCartMixin:
-    '''
-    mixin for is_favorited and is_in_shopping_cart fields
-    '''
+    """mixin for is_favorited and is_in_shopping_cart fields."""
+
     def get_is_favorited(self, obj):
         user = self.context["request"].user
         return (
-            user.is_authenticated and user.favorites.filter(recipe=obj.id).exists()
+            user.is_authenticated
+            and user.favorites.filter(recipe=obj.id).exists()
         )
 
     def get_is_in_shopping_cart(self, obj):
@@ -31,9 +33,8 @@ class FavoriteAndShoppingCartMixin:
 
 
 class IsSubscribedMixin:
-    '''
-    mixin for is_subscribed field 
-    '''
+    """mixin for is_subscribed field."""
+
     def get_is_subscribed(self, obj):
         user = self.context["request"].user
         if user.is_authenticated:
@@ -42,9 +43,8 @@ class IsSubscribedMixin:
 
 
 class Base64ImageField(serializers.ImageField):
-    '''
-    mixin for convert images fields
-    '''
+    """mixin for convert images fields."""
+
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith("data:image"):
             format, imgstr = data.split(";base64,")
@@ -64,8 +64,10 @@ class Base64ImageField(serializers.ImageField):
 
 
 class AvatarSerializer(serializers.ModelSerializer):
-    '''avatar serializer'''
+    """avatar serializer."""
+
     avatar = Base64ImageField(required=True, allow_null=True)
+
     class Meta:
         model = User
         fields = [
@@ -74,23 +76,24 @@ class AvatarSerializer(serializers.ModelSerializer):
 
 
 class TagSerializer(serializers.ModelSerializer):
-    '''tag serializer'''
+    """tag serializer."""
+
     class Meta:
         model = Tag
         fields = ("id", "name", "slug")
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    '''basic ingredient model serializer'''
+    """basic ingredient model serializer."""
+
     class Meta:
         model = Ingredient
         fields = ("id", "name", "measurement_unit")
 
 
 class RecipeMiniSerializer(serializers.ModelSerializer):
-    '''
-    basic recipe fields serializer
-    '''
+    """basic recipe fields serializer."""
+
     image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
@@ -99,9 +102,8 @@ class RecipeMiniSerializer(serializers.ModelSerializer):
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):
-    '''
-    custom token serializr
-    '''
+    """custom token serializr."""
+
     email = serializers.EmailField()
     password = serializers.CharField()
 
@@ -123,13 +125,12 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    '''
-    basic user model serializer 
-    '''
+    """basic user model serializer."""
+
     username = serializers.RegexField(
         regex=r"^[\w.@+-]+$",
         error_messages={
-            "invalid": "Некорректный формат username. Используйте только буквы, цифры и символы .@+-"
+            "invalid": "username failed. only alph, digits and .@+-"
         },
     )
 
@@ -167,10 +168,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class UserWithSubscriptionsSerializer(
     serializers.ModelSerializer, IsSubscribedMixin
-):  
-    '''
-    user with his subscriptions serializer 
-    '''
+):
+    """user with his subscriptions serializer."""
+
     is_subscribed = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
 
@@ -194,10 +194,9 @@ class UserWithSubscriptionsSerializer(
 
 class UserWithRecipesSerializer(
     serializers.ModelSerializer, IsSubscribedMixin
-):  
-    '''
-    user with recipes serializer 
-    '''
+):
+    """user with recipes serializer."""
+
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
     recipes_count = serializers.SerializerMethodField()
@@ -230,9 +229,8 @@ class UserWithRecipesSerializer(
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
-    '''
-    ingredients in recipe serializer 
-    '''
+    """ingredients in recipe serializer."""
+
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     name = serializers.CharField(source="ingredient.name", read_only=True)
     measurement_unit = serializers.CharField(
@@ -254,10 +252,9 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(
     serializers.ModelSerializer, FavoriteAndShoppingCartMixin
-):  
-    '''
-    full Recipe serializer for read
-    '''
+):
+    """full Recipe serializer for read."""
+
     is_in_shopping_cart = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     image = Base64ImageField(required=False, allow_null=True)
@@ -267,7 +264,6 @@ class RecipeSerializer(
     )
     tags = TagSerializer(many=True)
 
-    
     class Meta:
         model = Recipe
         fields = (
@@ -286,10 +282,9 @@ class RecipeSerializer(
 
 class RecipeCreateUpdateSerializer(
     serializers.ModelSerializer, FavoriteAndShoppingCartMixin
-):  
-    '''
-    full Recipe serializer for POST and UPDATE
-    '''
+):
+    """full Recipe serializer for POST and UPDATE."""
+
     is_in_shopping_cart = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     author = UserWithSubscriptionsSerializer(read_only=True)

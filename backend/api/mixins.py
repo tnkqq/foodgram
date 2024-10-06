@@ -4,5 +4,6 @@ from .pagination import PageNumberPaginationDataOnly
 
 
 class DefaultIngredientTagMixin(viewsets.ReadOnlyModelViewSet):
-    '''add same pagination for ingredient and tags'''
+    """add same pagination for ingredient and tags."""
+
     pagination_class = PageNumberPaginationDataOnly

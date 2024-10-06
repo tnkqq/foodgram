@@ -1,11 +1,14 @@
 from django.urls import include, path
-from rest_framework.authtoken.views import obtain_auth_token
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (TokenObtainPairView,
-                                            TokenRefreshView, TokenVerifyView)
 
-from .views import (CustomAuthToken, IngredientViewSet, LogoutView,
-                    RecipeViewSet, TagViewSet, UserViewSet)
+from .views import (
+    CustomAuthToken,
+    IngredientViewSet,
+    LogoutView,
+    RecipeViewSet,
+    TagViewSet,
+    UserViewSet,
+)
 
 from .views import redirect_to_full_link
 
@@ -31,7 +34,9 @@ url_auth = [
 urlpatterns = [
     path("auth/", include(url_auth)),
     path("", include(router_v1.urls)),
-    path('r/<str:short_code>/', redirect_to_full_link, name='short-link-redirect'),
+    path(
+        "r/<str:short_code>/",
+        redirect_to_full_link,
+        name="short-link-redirect",
+    ),
 ]
-
-

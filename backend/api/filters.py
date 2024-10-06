@@ -1,11 +1,12 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 
-from recipes.models import Ingredient, Recipe, ShoppingCart
+from recipes.models import Ingredient, Recipe
 
 
 class IngredientFilter(filters.FilterSet):
-    '''filter ingredient by input string'''
+    """filter ingredient by input string."""
+
     name = filters.CharFilter(field_name="name", lookup_expr="istartswith")
 
     class Meta:
@@ -14,9 +15,8 @@ class IngredientFilter(filters.FilterSet):
 
 
 class RecipeFilter(filters.FilterSet):
-    '''
-    filter recipes by author, tags, favorites, shopping_carts fields 
-    '''
+    """filter recipes by author, tags, favorites, shopping_carts fields."""
+
     tags = filters.CharFilter(field_name="tags__slug", method="filter_tags")
     is_favorited = filters.BooleanFilter(method="filter_is_favorited")
     is_in_shopping_cart = filters.BooleanFilter(
@@ -46,7 +46,9 @@ class RecipeFilter(filters.FilterSet):
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         user = self.request.user
-        shopping_cart_list = self.request.query_params.getlist("is_in_shopping_cart")
+        shopping_cart_list = self.request.query_params.getlist(
+            "is_in_shopping_cart"
+        )
         if shopping_cart_list and user.is_authenticated:
             return queryset.filter(cart__user=user)
         return queryset

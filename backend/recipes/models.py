@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.urls import reverse
 
 MAX_LENGTH_NAME = 150
 MAX_LENGTH_RECIPE = 256
@@ -102,7 +101,7 @@ class Recipe(models.Model):
         ordering = ["-pub_at"]
         verbose_name = "Рецепт"
         verbose_name_plural = "Рецепты"
-    
+
     def __str__(self):
         return f"{self.name}"
 
