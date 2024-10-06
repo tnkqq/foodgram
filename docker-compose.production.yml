@@ -15,14 +15,12 @@ services:
     image: tnkqq/foodgram_backend
     # build: ./backend 
     env_file: .env
-    container_name: foodgram_backend
     volumes:
       - static:/backend_static
       - media:/app/media/
   frontend:
     image: tnkqq/foodgram_frontend
     # build: ./frontend
-    container_name: foodgram_frontend
     command: cp -r /app/build/. /static/
     volumes:
       # - ./frontend/:/app/result_build/
