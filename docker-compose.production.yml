@@ -12,22 +12,24 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
   backend:
+    image: tnkqq/foodgram_backend
+    # build: ./backend 
     env_file: .env
     container_name: foodgram_backend
-    build: ./backend 
     volumes:
       - static:/backend_static
       - media:/app/media/
   frontend:
+    image: tnkqq/foodgram_frontend
+    # build: ./frontend
     container_name: foodgram_frontend
     command: cp -r /app/build/. /static/
-    build: ./frontend
     volumes:
       # - ./frontend/:/app/result_build/
       - static:/static
   gateway:
-    # image: tnkqq/kittygram_gateway
-    build: ./nginx
+    image: tnkqq/foodgram_gateaway
+    # build: ./nginx
     env_file: .env
     ports:
       - 8090:80
