@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
 MAX_LENGTH_NAME = 150
 MAX_LENGTH_RECIPE = 256
 MAX_LENGTH_INGREDIENT = 128
