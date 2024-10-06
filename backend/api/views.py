@@ -1,10 +1,14 @@
 import csv
 from collections import defaultdict
 
+import short_url
 from django.contrib.auth.password_validation import validate_password
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                            Subscription, Tag, User)
 from rest_framework import permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -14,37 +18,17 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.urls import reverse
-import short_url
-
-from recipes.models import (
-    FavoriteRecipe,
-    Ingredient,
-    Recipe,
-    ShoppingCart,
-    Subscription,
-    Tag,
-    User,
-)
 
 from .filters import IngredientFilter, RecipeFilter
 from .mixins import DefaultIngredientTagMixin
-from .pagination import (
-    PageNumberPaginationDataOnly,
-    UserSubscriptionPagination,
-)
-from .serializers import (
-    AvatarSerializer,
-    CustomAuthTokenSerializer,
-    IngredientSerializer,
-    RecipeCreateUpdateSerializer,
-    RecipeMiniSerializer,
-    RecipeSerializer,
-    TagSerializer,
-    UserSerializer,
-    UserWithRecipesSerializer,
-    UserWithSubscriptionsSerializer,
-)
+from .pagination import (PageNumberPaginationDataOnly,
+                         UserSubscriptionPagination)
+from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
+                          IngredientSerializer, RecipeCreateUpdateSerializer,
+                          RecipeMiniSerializer, RecipeSerializer,
+                          TagSerializer, UserSerializer,
+                          UserWithRecipesSerializer,
+                          UserWithSubscriptionsSerializer)
 
 
 def redirect_to_full_link(request, short_code):

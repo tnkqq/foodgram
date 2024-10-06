@@ -1,17 +1,11 @@
 import base64
 import re
-from rest_framework import serializers
+
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
-
-from recipes.models import (
-    Ingredient,
-    Recipe,
-    RecipeIngredient,
-    Tag,
-    User,
-)
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag, User
+from rest_framework import serializers
 
 
 class FavoriteAndShoppingCartMixin:

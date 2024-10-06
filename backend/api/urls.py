@@ -1,16 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    CustomAuthToken,
-    IngredientViewSet,
-    LogoutView,
-    RecipeViewSet,
-    TagViewSet,
-    UserViewSet,
-)
-
-from .views import redirect_to_full_link
+from .views import (CustomAuthToken, IngredientViewSet, LogoutView,
+                    RecipeViewSet, TagViewSet, UserViewSet,
+                    redirect_to_full_link)
 
 router_v1 = DefaultRouter()
 
