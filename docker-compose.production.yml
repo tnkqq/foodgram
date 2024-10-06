@@ -28,7 +28,7 @@ services:
       # - ./frontend/:/app/result_build/
       - static:/static
   gateway:
-    image: tnkqq/foodgram_gateaway
+    image: tnkqq/foodgram_gateway
     # build: ./nginx
     env_file: .env
     ports:
