@@ -276,7 +276,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         encoded_id = short_url.encode_url(recipe.id)
 
-        short_link = f"{settings.BASE_URL}r/{encoded_id}"
+        short_link = f"{settings.BASE_URL}/r/{encoded_id}"
 
         return Response({"short-link": short_link}, status=status.HTTP_200_OK)
 
