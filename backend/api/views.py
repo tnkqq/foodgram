@@ -40,7 +40,7 @@ def redirect_to_full_link(request, short_code):
 
         # return redirect(full_url)
         return HttpResponse(
-            f"{full_url}", status=404
+            f"str - {full_url}", status=200
         )
     except (ValueError, Recipe.DoesNotExist):
         return HttpResponse(
