@@ -33,9 +33,10 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
 def redirect_to_full_link(request, short_code):
     """View для перенаправления короткой ссылки на полный URL рецепта."""
     try:
+        base_url = request.build_absolute_uri("/")[:-1].strip("/")
         recipe_id = short_url.decode_url(short_code)
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        full_url = f"/recipes/{recipe.id}/"
+        full_url = f"{base_url}/recipes/{recipe.id}/"
         return redirect(full_url)
 
     except (ValueError, Recipe.DoesNotExist):
