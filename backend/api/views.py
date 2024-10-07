@@ -3,8 +3,8 @@ from collections import defaultdict
 
 import short_url
 from django.contrib.auth.password_validation import validate_password
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                             Subscription, Tag, User)
@@ -29,7 +29,7 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           UserWithRecipesSerializer,
                           UserWithSubscriptionsSerializer)
 
-BASE_URL = 'http://localhost:8090:'
+BASE_URL = 'https://tonenkovfoodgram'
 
 
 def redirect_to_full_link(request, short_code):
@@ -40,7 +40,7 @@ def redirect_to_full_link(request, short_code):
 
         full_url = f"{BASE_URL}/recipes/{recipe.id}/"
 
-        return redirect(full_url)
+        return HttpResponseRedirect(full_url)
 
     except (ValueError, Recipe.DoesNotExist):
         return HttpResponse(
