@@ -29,7 +29,7 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           UserWithRecipesSerializer,
                           UserWithSubscriptionsSerializer)
 
-BASE_URL = 'https://tonenkovfoodgram'
+BASE_URL = 'https://tonenkovfoodgram.hopto.org/'
 
 
 class LogoutView(APIView):
