@@ -10,9 +10,9 @@ def redirect_to_full_link(request, short_code):
         recipe_id = short_url.decode_url(short_code)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         full_url = (
-            f"{request.scheme}://"
-            f"{request.get_host()}/"
-            f"recipes/{recipe.id}/"
+            request.build_absolute_uri(
+                f"recipes/{recipe.id}/"
+            )
         )
         return redirect(full_url)
     except (ValueError, Recipe.DoesNotExist):
