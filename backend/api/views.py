@@ -277,9 +277,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         encoded_id = short_url.encode_url(recipe.id)
 
-        base_url = "https://tonenkovfoodgram"
-
-        short_link = f"{base_url}/r/{encoded_id}"
+        short_link = f"{BASE_URL}/r/{encoded_id}"
 
         return Response({"short-link": short_link}, status=status.HTTP_200_OK)
 
