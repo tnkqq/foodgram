@@ -36,7 +36,7 @@ def redirect_to_full_link(request, short_code):
     try:
         recipe_id = short_url.decode_url(short_code)
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        return redirect(reverse("recipes:detail", kwargs={"pk": recipe.id}))
+        return redirect(reverse("recipes-detail", kwargs={"pk": recipe.id}))
 
     except (ValueError, Recipe.DoesNotExist):
         return HttpResponse(
