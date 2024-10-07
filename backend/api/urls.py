@@ -19,10 +19,6 @@ router_v1.register("recipes", viewset=RecipeViewSet, basename="recipes")
 router_v1.register(r"users", UserViewSet, basename="users")
 
 url_auth = [
-    path(
-        "r/<str:short_code>/",
-        redirect_to_full_link,
-        name="short-link-redirect"),
     path("token/login/", CustomAuthToken.as_view(), name="token_obtain"),
     path("token/logout/", LogoutView.as_view(), name="logout"),
 ]
