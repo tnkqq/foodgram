@@ -27,9 +27,5 @@ url_auth = [
 urlpatterns = [
     path("auth/", include(url_auth)),
     path("", include(router_v1.urls)),
-    path(
-        "r/<str:short_code>/",
-        redirect_to_full_link,
-        name="short-link-redirect",
-    ),
+    
 ]
