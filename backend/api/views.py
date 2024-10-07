@@ -2,6 +2,7 @@ import csv
 from collections import defaultdict
 
 import short_url
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -28,8 +29,6 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           TagSerializer, UserSerializer,
                           UserWithRecipesSerializer,
                           UserWithSubscriptionsSerializer)
-
-BASE_URL = 'https://tonenkovfoodgram.hopto.org/'
 
 
 class LogoutView(APIView):
@@ -277,7 +276,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         encoded_id = short_url.encode_url(recipe.id)
 
-        short_link = f"{BASE_URL}/r/{encoded_id}"
+        short_link = f"{settings.BASE_URL}r/{encoded_id}"
 
         return Response({"short-link": short_link}, status=status.HTTP_200_OK)
 

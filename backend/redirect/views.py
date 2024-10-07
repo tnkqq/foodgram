@@ -1,4 +1,5 @@
 import short_url
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 from recipes.models import Recipe
@@ -9,11 +10,7 @@ def redirect_to_full_link(request, short_code):
     try:
         recipe_id = short_url.decode_url(short_code)
         recipe = get_object_or_404(Recipe, id=recipe_id)
-        full_url = (
-            request.build_absolute_uri(
-                f"recipes/{recipe.id}/"
-            )
-        )
+        full_url = (f"{settings.BASE_URL}recipes/{recipe.id}/")
         return redirect(full_url)
     except (ValueError, Recipe.DoesNotExist):
         return HttpResponse(
