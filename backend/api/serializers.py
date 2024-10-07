@@ -330,7 +330,7 @@ class RecipeCreateUpdateSerializer(
         instance.cooking_time = validated_data.get(
             "cooking_time", instance.cooking_time
         )
-        instance.save()
+
         tags_data = validated_data.get("tags", None)
         ingredients_data = validated_data.get("recipeingredient_set", None)
 
@@ -359,6 +359,7 @@ class RecipeCreateUpdateSerializer(
                 RecipeIngredient.objects.create(
                     recipe=instance, ingredient=ingredient, amount=amount
                 )
+        instance.save()
         return instance
 
     def to_representation(self, instance):
