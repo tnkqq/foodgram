@@ -324,43 +324,54 @@ class RecipeCreateUpdateSerializer(
         return recipe
 
     def update(self, instance, validated_data):
-        instance.name = validated_data.get("name", instance.name)
-        instance.image = validated_data.get("image", instance.image)
-        instance.text = validated_data.get("text", instance.text)
-        instance.cooking_time = validated_data.get(
-            "cooking_time", instance.cooking_time
-        )
+    instance.name = validated_data.get("name", instance.name)
+    instance.image = validated_data.get("image", instance.image)
+    instance.text = validated_data.get("text", instance.text)
+    instance.cooking_time = validated_data.get(
+        "cooking_time", instance.cooking_time
+    )
 
-        tags_data = validated_data.get("tags", None)
-        ingredients_data = validated_data.get("recipeingredient_set", None)
+    tags_data = validated_data.pop("tags", None)
+    ingredients_data = validated_data.pop("recipeingredient_set", None)
 
-        if tags_data is not None:
-            instance.tags.set(tags_data)
+    if tags_data is not None:
+        instance.tags.set(tags_data)
 
-        self._validate_tags_ingredients_data(ingredients_data, tags_data)
+    self._validate_tags_ingredients_data(ingredients_data, tags_data)
 
-        existing_ingredient_ids = [
-            ingredient.ingredient.id
-            for ingredient in instance.recipeingredient_set.all()
-        ]
+    existing_ingredients = {
+        ingredient.ingredient.id: ingredient
+        for ingredient in instance.recipeingredient_set.all()
+    }
 
-        for ingredient_data in ingredients_data:
-            ingredient_id = ingredient_data.get("id").id
-            amount = ingredient_data.get("amount")
+    new_ingredient_ids = []
 
-            if ingredient_id in existing_ingredient_ids:
-                recipe_ingredient = instance.recipeingredient_set.get(
-                    ingredient_id=ingredient_id
-                )
-                recipe_ingredient.amount = amount
-                recipe_ingredient.save()
-            else:
-                ingredient = Ingredient.objects.get(id=ingredient_id)
-                RecipeIngredient.objects.create(
-                    recipe=instance, ingredient=ingredient, amount=amount
-                )
-        instance.save()
-        return instance
+    for ingredient_data in ingredients_data:
+        ingredient_id = ingredient_data.get("id").id
+        amount = ingredient_data.get("amount")
+
+        if ingredient_id in existing_ingredients:
+            recipe_ingredient = existing_ingredients[ingredient_id]
+            recipe_ingredient.amount = amount
+            recipe_ingredient.save()
+        else:
+            ingredient = Ingredient.objects.get(id=ingredient_id)
+            RecipeIngredient.objects.create(
+                recipe=instance, ingredient=ingredient, amount=amount
+            )
+
+        # Добавляем в список новых ингредиентов
+        new_ingredient_ids.append(ingredient_id)
+
+    # Удаляем ингредиенты, которые не были переданы в новых данных
+    for ingredient_id in list(existing_ingredients.keys()):
+        if ingredient_id not in new_ingredient_ids:
+            existing_ingredients[ingredient_id].delete()
+
+    # Сохраняем обновленный рецепт
+    instance.save()
+
+    return instance
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
