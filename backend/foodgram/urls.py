@@ -1,4 +1,3 @@
-from api.views import redirect_to_full_link
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
