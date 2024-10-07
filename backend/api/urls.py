@@ -22,8 +22,7 @@ url_auth = [
     path("token/logout/", LogoutView.as_view(), name="logout"),
 ]
 
-
 urlpatterns = [
     path("auth/", include(url_auth)),
-    path("", include(router_v1.urls)),    
+    path("", include(router_v1.urls)),
 ]
