@@ -5,10 +5,7 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path(
-        "r/<str:short_code>/",
-        redirect_to_full_link,
-        name="short-link-redirect"),
+    path("r/", include("api.urls")),
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
 ]
