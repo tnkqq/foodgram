@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_URL = "https://yourdomain.com"
+BASE_URL = "https://tonenkovfoodgram.hopto.org/"
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
