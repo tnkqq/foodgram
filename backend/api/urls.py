@@ -2,8 +2,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (CustomAuthToken, IngredientViewSet, LogoutView,
-                    RecipeViewSet, TagViewSet, UserViewSet,
-                    redirect_to_full_link)
+                    RecipeViewSet, TagViewSet, UserViewSet)
 
 router_v1 = DefaultRouter()
 
@@ -26,6 +25,5 @@ url_auth = [
 
 urlpatterns = [
     path("auth/", include(url_auth)),
-    path("", include(router_v1.urls)),
-    
+    path("", include(router_v1.urls)),    
 ]
