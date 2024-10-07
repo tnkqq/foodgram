@@ -29,7 +29,7 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           UserWithRecipesSerializer,
                           UserWithSubscriptionsSerializer)
 
-BASE_URL = 'http://tonenkovfoodgram'
+BASE_URL = 'http://localhost:8090:'
 
 
 def redirect_to_full_link(request, short_code):
