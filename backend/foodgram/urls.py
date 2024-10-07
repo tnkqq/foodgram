@@ -6,6 +6,10 @@ from django.urls import include, path
 
 urlpatterns = [
     path(
+        "r/",
+        redirect_to_full_link,
+        name="short-link-redirect"),
+    path(
         "r/<str:short_code>/",
         redirect_to_full_link,
         name="short-link-redirect"),
