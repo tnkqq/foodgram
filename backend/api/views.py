@@ -5,7 +5,6 @@ import short_url
 from django.contrib.auth.password_validation import validate_password
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
                             Subscription, Tag, User)
@@ -37,7 +36,6 @@ def redirect_to_full_link(request, short_code):
         recipe_id = short_url.decode_url(short_code)
         recipe = get_object_or_404(Recipe, id=recipe_id)
         full_url = f"/recipes/{recipe.id}/"
-        
         return redirect(full_url)
 
     except (ValueError, Recipe.DoesNotExist):
