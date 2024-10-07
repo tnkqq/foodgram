@@ -2,7 +2,7 @@ import short_url
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
 
-from .models import Recipe
+from recipes.models import Recipe
 
 
 def redirect_to_full_link(request, short_code):

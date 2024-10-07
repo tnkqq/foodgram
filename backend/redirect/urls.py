@@ -1,4 +1,4 @@
-from api.views import redirect_to_full_link
+from .views import redirect_to_full_link
 from django.urls import path
 
 urlpatterns = [
