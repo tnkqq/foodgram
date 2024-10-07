@@ -1,4 +1,42 @@
-Находясь в папке infra, выполните команду docker-compose up. При выполнении этой команды контейнер frontend, описанный в docker-compose.yml, подготовит файлы, необходимые для работы фронтенд-приложения, а затем прекратит свою работу.
 
-По адресу http://localhost изучите фронтенд веб-приложения, а по адресу http://localhost/api/docs/ — спецификацию API.
+«Фудграм» — сайт, на котором пользователи могут публиковать свои рецепты, добавлять чужие рецепты в избранное и подписываться на публикации других авторов. Зарегистрированным пользователям также доступен сервис «Список покупок». Он позволит создавать список продуктов, которые нужно купить для приготовления выбранных блюд.
+
+### Основные используемые технологии
+* Python 3.9,
+* Django 3.2
+* PostgresSQL
+
+
+### Как работать с репозиторием финального задания
+    
+Клонировать репозиторий и перейти в него в командной строке:
+```bash
+git clone https://github.com/tnkqq/foodgram.git
+```
+
+``` bash
+cd foodgram/
+```
+
+Запустите весь оркестр — в терминале в папке с docker-compose.yml выполните команду:
+
+```bash
+docker-compose -f docker-compose.production.yml up
+```
+
+Выполнить миграции 
+```bash 
+docker compose exec backend python manage.py migrate 
+```
+
+Выгрузить данные ингредиениов и тегов из ingredients.json и tags.json
+
+```bash 
+docker compose exec backend python manage.py IngredientUpdate 
+```
+
+```bash 
+docker compose exec backend python manage.py IngredientUpdate 
+```
+
 
