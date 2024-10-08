@@ -3,9 +3,8 @@ import re
 
 from django.contrib.auth import authenticate
 from django.core.files.base import ContentFile
-from rest_framework import serializers
-
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag, User
+from rest_framework import serializers
 
 
 class FavoriteAndShoppingCartMixin:
