@@ -20,7 +20,7 @@ from rest_framework.views import APIView
 
 from .filters import IngredientFilter, RecipeFilter
 from .mixins import DefaultIngredientTagMixin
-from .pagination import (PageNumberPaginationDataOnly,
+from .pagination import (PageLimitPagination, PageNumberPaginationDataOnly,
                          UserSubscriptionPagination)
 from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           IngredientSerializer, RecipeCreateUpdateSerializer,
@@ -240,6 +240,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     """all recipes actions view set."""
 
+    pagination_class = PageLimitPagination
     queryset = Recipe.objects.all()
     filter_backends = [
         DjangoFilterBackend,
