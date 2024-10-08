@@ -242,7 +242,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """all recipes actions view set."""
 
     queryset = Recipe.objects.all()
-    pagination_class = LimitOffsetPagination
     filter_backends = [
         DjangoFilterBackend,
     ]
