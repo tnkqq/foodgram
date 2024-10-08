@@ -396,7 +396,8 @@ class RecipeCreateUpdateSerializer(
             if amount is None or amount < 1:
                 raise serializers.ValidationError(
                     {
-                        "ingredients": ("Количество ингредиент"
-                                        "должно быть больше 0.")
+                        "ingredients": (
+                            "Количество ингредиент" "должно быть больше 0."
+                        )
                     }
                 )
