@@ -1,5 +1,4 @@
-from rest_framework.pagination import (LimitOffsetPagination,
-                                       PageNumberPagination)
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 
@@ -16,11 +15,7 @@ class UserSubscriptionPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class PageLimitPagination(LimitOffsetPagination):
+class PageLimitPagination(PageNumberPagination):
+    page_size = 6
     page_size_query_param = 'limit'
-    max_page_size = 100
-
-    def get_offset(self, request):
-        page = request.query_params.get('page', 1)
-        limit = self.get_limit(request)
-        return (int(page) - 1) * limit
+    max_page_size = 10000
