@@ -3,12 +3,13 @@ from collections import defaultdict
 
 import short_url
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                            Subscription, Tag, User)
+                            Subscription, Tag)
 from rest_framework import permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -28,6 +29,8 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           TagSerializer, UserSerializer,
                           UserWithRecipesSerializer,
                           UserWithSubscriptionsSerializer)
+
+User = get_user_model()
 
 
 class LogoutView(APIView):

@@ -1,7 +1,10 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
 
 from .models import (FavoriteRecipe, Ingredient, Recipe, RecipeIngredient,
-                     ShoppingCart, Subscription, Tag, User)
+                     ShoppingCart, Subscription, Tag)
+
+User = get_user_model()
 
 
 @admin.register(Ingredient)
@@ -23,9 +26,15 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "author", "cooking_time", "pub_at")
-    search_fields = ("name",)
+    search_fields = ("name", "author")
     list_filter = ("tags",)
     empty_value_display = "-пусто-"
+
+    def favorite_count(self, obj):
+        """Возвращает количество добавлений рецепта в избранное."""
+        return FavoriteRecipe.objects.filter(recipe=obj).count()
+
+    favorite_count.short_description = "Количество добавлений в избранное"
 
 
 @admin.register(RecipeIngredient)
@@ -54,4 +63,7 @@ class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = ("user", "recipe")
 
 
-admin.site.register(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("id", "username", "email")
+    search_fields = ("emai", "username")

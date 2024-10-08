@@ -1,10 +1,12 @@
 import base64
 import re
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from django.core.files.base import ContentFile
-from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag, User
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from rest_framework import serializers
+
+User = get_user_model()
 
 
 class FavoriteAndShoppingCartMixin:
