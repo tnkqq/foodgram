@@ -25,18 +25,17 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-
-    def favorite_count(self, obj):
-        """Возвращает количество добавлений рецепта в избранное."""
-        return FavoriteRecipe.objects.filter(recipe=obj).count()
-
     list_display = ("id", "name", "author", "cooking_time", "pub_at",
-                    "favorite_count",)
-    search_fields = ("name", "author")
+                    "get_favorite_count")
+    search_fields = ("name", "author__username")
     list_filter = ("tags",)
     empty_value_display = "-пусто-"
 
-    favorite_count.short_description = "Количество добавлений в избранное"
+    def get_favorite_count(self, obj):
+        """Возвращает количество добавлений в избранное для рецепта."""
+        return obj.favorited_by.count()
+
+    get_favorite_count.short_description = "Количество добавлений в избранное"
 
 
 @admin.register(RecipeIngredient)
