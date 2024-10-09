@@ -1,6 +1,5 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.db.models import Count
 
 from .models import (FavoriteRecipe, Ingredient, Recipe, RecipeIngredient,
                      ShoppingCart, Subscription, Tag)
@@ -26,15 +25,16 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+
+    def favorite_count(self, obj):
+        """Возвращает количество добавлений рецепта в избранное."""
+        return FavoriteRecipe.objects.filter(recipe=obj).count()
+
     list_display = ("id", "name", "author", "cooking_time", "pub_at",
                     "favorite_count",)
     search_fields = ("name", "author")
     list_filter = ("tags",)
     empty_value_display = "-пусто-"
-
-    def favorite_count(self, obj):
-        """Возвращает количество добавлений рецепта в избранное."""
-        return FavoriteRecipe.objects.filter(recipe=obj).count()
 
     favorite_count.short_description = "Количество добавлений в избранное"
 
