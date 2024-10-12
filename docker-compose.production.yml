@@ -18,7 +18,7 @@ services:
       - static:/backend_static
       - media:/app/media/
   frontend:
-    image: tnkqq/foodgram_fronten
+    image: tnkqq/foodgram_frontend
     command: cp -r /app/build/. /static/
     volumes:
       - static:/static
