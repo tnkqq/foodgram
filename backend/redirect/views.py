@@ -2,7 +2,6 @@ import short_url
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect
-
 from recipes.models import Recipe
 
 
