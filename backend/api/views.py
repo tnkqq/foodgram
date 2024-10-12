@@ -1,15 +1,9 @@
-import csv
-from collections import defaultdict
-
 import short_url
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                            Subscription, Tag)
 from rest_framework import permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -18,6 +12,9 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                            Subscription, Tag)
 
 from .filters import IngredientFilter, RecipeFilter
 from .mixins import DefaultIngredientTagMixin
@@ -29,6 +26,7 @@ from .serializers import (AvatarSerializer, CustomAuthTokenSerializer,
                           TagSerializer, UserSerializer,
                           UserWithRecipesSerializer,
                           UserWithSubscriptionsSerializer)
+from .utils import write_shopping_cart_file
 
 User = get_user_model()
 
@@ -88,12 +86,12 @@ class UserViewSet(viewsets.ModelViewSet):
     pagination_class = UserSubscriptionPagination
 
     def get_serializer_class(self):
-        if self.action in ["list", "retrieve", "me"]:
+        if self.action in ("list", "retrieve", "me"):
             return UserWithSubscriptionsSerializer
         return UserSerializer
 
     @action(
-        detail=False, methods=["get"], permission_classes=[IsAuthenticated]
+        detail=False, methods=("get",), permission_classes=[IsAuthenticated]
     )
     def me(self, request):
         serializer = self.get_serializer(request.user)
@@ -101,7 +99,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=["put", "delete"],
+        methods=("put", "delete"),
         url_path="me/avatar",
         permission_classes=[IsAuthenticated],
     )
@@ -132,7 +130,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=["post"],
+        methods=("post"),
         url_path="set_password",
         permission_classes=[IsAuthenticated],
     )
@@ -171,7 +169,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=["get"],
+        methods=("get",),
         permission_classes=[permissions.IsAuthenticated],
     )
     def subscriptions(self, request):
@@ -187,7 +185,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=["post", "delete"],
+        methods=("post", "delete"),
         url_path="subscribe",
         permission_classes=[permissions.IsAuthenticated],
     )
@@ -254,7 +252,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     ]
 
     def get_serializer_class(self):
-        if self.action in ["create", "update", "partial_update"]:
+        if self.action in ("create", "update", "partial_update"):
             return RecipeCreateUpdateSerializer
         return RecipeSerializer
 
@@ -268,7 +266,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=["get"],
+        methods=("get",),
         url_path="get-link",
         permission_classes=[permissions.AllowAny],
     )
@@ -284,7 +282,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=True,
-        methods=["post", "delete"],
+        methods=("post", "delete"),
         url_path="favorite",
         permission_classes=[permissions.IsAuthenticated],
     )
@@ -321,7 +319,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=True,
         url_path="shopping_cart",
-        methods=["delete", "post"],
+        methods=("delete", "post"),
         permission_classes=[permissions.IsAuthenticated],
     )
     def manage_shopping_cart(self, request, pk=None):
@@ -362,34 +360,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         detail=False,
         url_path="download_shopping_cart",
-        methods=["get"],
+        methods=("get",),
         permission_classes=[permissions.IsAuthenticated],
     )
     def download_shopping_cart_csv(self, request):
         user = request.user
-        ingredients = defaultdict(int)
-
-        for cart_item in user.shopping_cart.all():
-            recipe = cart_item.recipe
-            for recipe_ingredient in recipe.recipeingredient_set.all():
-                ingredients[
-                    (
-                        recipe_ingredient.ingredient.name,
-                        recipe_ingredient.ingredient.measurement_unit,
-                    )
-                ] += recipe_ingredient.amount
-
-        response = HttpResponse(content_type="text/csv")
-        response["Content-Disposition"] = (
-            'attachment; filename="shopping_list.csv"'
-        )
-
-        writer = csv.writer(response)
-        writer.writerow(["Ingredient", "Measurement Unit", "Amount"])
-        for (ingredient_name, measurement_unit), amount in ingredients.items():
-            writer.writerow([ingredient_name, measurement_unit, amount])
-
-        return response
+        return write_shopping_cart_file(user)
 
     def destroy(self, request, *args, **kwargs):
         recipe = self.get_object()

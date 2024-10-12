@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
+
 from recipes.models import Ingredient, Recipe
 
 
@@ -10,7 +11,7 @@ class IngredientFilter(filters.FilterSet):
 
     class Meta:
         model = Ingredient
-        fields = ["name"]
+        fields = ("name",)
 
 
 class RecipeFilter(filters.FilterSet):
@@ -24,7 +25,7 @@ class RecipeFilter(filters.FilterSet):
 
     class Meta:
         model = Recipe
-        fields = ["tags", "is_favorited", "author", "is_in_shopping_cart"]
+        fields = ("tags", "is_favorited", "author", "is_in_shopping_cart")
 
     def filter_tags(self, queryset, name, value):
         tag_slugs = self.request.query_params.getlist("tags")

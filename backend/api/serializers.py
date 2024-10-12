@@ -3,8 +3,10 @@ import re
 
 from django.contrib.auth import authenticate, get_user_model
 from django.core.files.base import ContentFile
-from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from rest_framework import serializers
+
+from recipes.models import (MAX_LENGTH_NAME, Ingredient, Recipe,
+                            RecipeIngredient, Tag)
 
 User = get_user_model()
 
@@ -154,7 +156,7 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Username не соответствует регулярному выражению."
             )
-        if len(value) >= 150:
+        if len(value) >= MAX_LENGTH_NAME:
             raise serializers.ValidationError(
                 "Максимальная длина username - 150 символов"
             )
