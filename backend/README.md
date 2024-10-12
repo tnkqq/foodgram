@@ -2,8 +2,8 @@ tonenkovfoodgram.hopto.org - «Фудграм» — сайт, на которо�
 
 ### AdminLogin
 ```python
-login = admin_foodgram
-password = admin_foodgram
+lgn = admin_foodgram
+psswrd = admin_foodgram
 ```
 ### Основные используемые технологии
 * Python 3.9,
