@@ -26,8 +26,14 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ("id", "name", "author", "cooking_time", "pub_at",
-                    "favorite_count")
+    list_display = (
+        "id",
+        "name",
+        "author",
+        "cooking_time",
+        "pub_at",
+        "favorite_count",
+    )
 
     def favorite_count(self, obj):
         """Возвращает количество добавлений в избранное для рецепта."""

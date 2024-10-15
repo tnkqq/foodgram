@@ -4,16 +4,16 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
-                            Subscription, Tag)
 from rest_framework import permissions, status, viewsets
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from recipes.models import (FavoriteRecipe, Ingredient, Recipe, ShoppingCart,
+                            Subscription, Tag)
 
 from .filters import IngredientFilter, RecipeFilter
 from .mixins import DefaultIngredientTagMixin
@@ -31,7 +31,7 @@ User = get_user_model()
 
 
 class LogoutView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request):
         request.user.auth_token.delete()
@@ -48,7 +48,7 @@ class TagViewSet(DefaultIngredientTagMixin):
 class IngredientViewSet(DefaultIngredientTagMixin):
     """Ingredient view set."""
 
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
@@ -81,7 +81,7 @@ class UserViewSet(viewsets.ModelViewSet):
     """
 
     queryset = User.objects.all()
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (permissions.AllowAny,)
     pagination_class = UserSubscriptionPagination
 
     def get_serializer_class(self):
@@ -90,7 +90,9 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     @action(
-        detail=False, methods=("get",), permission_classes=[IsAuthenticated]
+        detail=False,
+        methods=("get",),
+        permission_classes=[permissions.IsAuthenticated],
     )
     def me(self, request):
         serializer = self.get_serializer(request.user)
@@ -100,7 +102,7 @@ class UserViewSet(viewsets.ModelViewSet):
         detail=False,
         methods=("put", "delete"),
         url_path="me/avatar",
-        permission_classes=[IsAuthenticated],
+        permission_classes=[permissions.IsAuthenticated],
     )
     def set_avatar(self, request):
         """Action for set user's avatar."""
@@ -129,9 +131,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=("post"),
+        methods=("post",),
         url_path="set_password",
-        permission_classes=[IsAuthenticated],
+        permission_classes=[permissions.IsAuthenticated],
     )
     def set_password(self, request):
         """Action for set user's password."""
@@ -242,13 +244,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all()
     pagination_class = PageLimitPagination
-    filter_backends = [
-        DjangoFilterBackend,
-    ]
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    permission_class = permission_classes = [
-        permissions.IsAuthenticatedOrReadOnly
-    ]
+    permission_class = (permissions.IsAuthenticatedOrReadOnly,)
 
     def get_serializer_class(self):
         if self.action in ("create", "update", "partial_update"):
@@ -267,7 +265,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=("get",),
         url_path="get-link",
-        permission_classes=[permissions.AllowAny],
+        permission_classes=(permissions.AllowAny,),
     )
     def get_short_link(self, request, pk=None):
         """Action for getting a short link to the recipe."""
@@ -283,7 +281,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         methods=("post", "delete"),
         url_path="favorite",
-        permission_classes=[permissions.IsAuthenticated],
+        permission_classes=(permissions.IsAuthenticated,),
     )
     def add_to_favorite(self, request, pk=None):
         """
@@ -319,7 +317,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="shopping_cart",
         methods=("delete", "post"),
-        permission_classes=[permissions.IsAuthenticated],
+        permission_classes=(permissions.IsAuthenticated),
     )
     def manage_shopping_cart(self, request, pk=None):
         """
@@ -360,7 +358,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=False,
         url_path="download_shopping_cart",
         methods=("get",),
-        permission_classes=[permissions.IsAuthenticated],
+        permission_classes=(permissions.IsAuthenticated,),
     )
     def download_shopping_cart_csv(self, request):
         user = request.user
@@ -371,6 +369,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if recipe.author != request.user:
             return Response(
                 {"detail": "У вас нет прав для удаления этого рецепта."},
-                status=403,
+                status=status.HTTP_403_FORBIDDEN,
             )
         return super().destroy(request, *args, **kwargs)

@@ -3,9 +3,10 @@ import re
 
 from django.contrib.auth import authenticate, get_user_model
 from django.core.files.base import ContentFile
+from rest_framework import serializers
+
 from recipes.models import (MAX_LENGTH_NAME, Ingredient, Recipe,
                             RecipeIngredient, Tag)
-from rest_framework import serializers
 
 User = get_user_model()
 
@@ -368,7 +369,7 @@ class RecipeCreateUpdateSerializer(
         return value
 
     def _validate_tags_ingredients_data(self, ingredients_data, tags_data):
-        if ingredients_data is None or len(ingredients_data) == 0:
+        if ingredients_data is None:
             raise serializers.ValidationError(
                 {"ingredients": "Это поле обязательно."}
             )
