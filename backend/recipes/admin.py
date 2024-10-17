@@ -17,7 +17,7 @@ class IngredientsInlineFormset(BaseInlineFormSet):
 
 
 class IngredientsInline(admin.TabularInline):
-    model = Ingredient
+    model = RecipeIngredient
     formset = IngredientsInlineFormset
     extra = 0
 
