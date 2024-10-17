@@ -37,11 +37,11 @@ docker compose exec backend python manage.py migrate
 Выгрузить данные ингредиениов и тегов из ingredients.json и tags.json
 
 ```bash 
-docker compose exec backend python manage.py IngredientUpdate 
+docker compose exec backend python manage.py ingredient_update 
 ```
 
 ```bash 
-docker compose exec backend python manage.py IngredientUpdate 
+docker compose exec backend python manage.py tag_update 
 ```
 
 ### .env  example
