@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.forms.models import BaseInlineFormSet
+from django.utils.translation import gettext_lazy as _
 
 from .models import (FavoriteRecipe, Ingredient, Recipe, RecipeIngredient,
                      ShoppingCart, Subscription, Tag)
@@ -11,9 +13,11 @@ User = get_user_model()
 
 class IngredientsInlineFormset(BaseInlineFormSet):
     def clean_ingredients(self):
-        if len(self.cleaned_data['ingredients']) < 1:
-            return 'Укажите хотя бы один ингредиент в рецепте'
-        return self.cleaned_data['ingredients']
+        if len(self.cleaned_data["ingredients"]) < 1:
+            raise ValidationError(
+                _("Укажите хотя бы один ингредиент в рецепте")
+            )
+        return self.cleaned_data["ingredients"]
 
 
 class IngredientsInline(admin.TabularInline):
