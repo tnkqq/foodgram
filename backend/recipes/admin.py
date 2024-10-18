@@ -15,7 +15,9 @@ class IngredientsInlineFormset(BaseInlineFormSet):
     def clean(self):
         super().clean()
         if not any(form.cleaned_data for form in self.forms):
-            raise ValidationError(_("Укажите хотя бы один ингредиент в рецепте"))
+            raise ValidationError(
+                _("Укажите хотя бы один ингредиент в рецепте")
+            )
 
 
 class IngredientsInline(admin.TabularInline):
