@@ -3,15 +3,16 @@ import re
 
 from django.contrib.auth import authenticate, get_user_model
 from django.core.files.base import ContentFile
+from rest_framework import serializers
+
 from recipes.models import (MAX_LENGTH_NAME, Ingredient, Recipe,
                             RecipeIngredient, Tag)
-from rest_framework import serializers
 
 User = get_user_model()
 
 
 class FavoriteAndShoppingCartMixin:
-    """mixin for is_favorited and is_in_shopping_cart fields."""
+    """Mixin for is_favorited and is_in_shopping_cart fields."""
 
     def get_is_favorited(self, obj):
         user = self.context["request"].user
@@ -29,7 +30,7 @@ class FavoriteAndShoppingCartMixin:
 
 
 class IsSubscribedMixin:
-    """mixin for is_subscribed field."""
+    """Mixin for is_subscribed field."""
 
     def get_is_subscribed(self, obj):
         user = self.context["request"].user
@@ -39,7 +40,7 @@ class IsSubscribedMixin:
 
 
 class Base64ImageField(serializers.ImageField):
-    """mixin for convert images fields."""
+    """Mixin for convert images fields."""
 
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith("data:image"):
@@ -60,19 +61,19 @@ class Base64ImageField(serializers.ImageField):
 
 
 class AvatarSerializer(serializers.ModelSerializer):
-    """avatar serializer."""
+    """Avatar serializer."""
 
     avatar = Base64ImageField(required=True, allow_null=True)
 
     class Meta:
         model = User
-        fields = [
+        fields = (
             "avatar",
-        ]
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """tag serializer."""
+    """Tag serializer."""
 
     class Meta:
         model = Tag
@@ -80,7 +81,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class IngredientSerializer(serializers.ModelSerializer):
-    """basic ingredient model serializer."""
+    """Basic ingredient model serializer."""
 
     class Meta:
         model = Ingredient
@@ -88,7 +89,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeMiniSerializer(serializers.ModelSerializer):
-    """basic recipe fields serializer."""
+    """Basic recipe fields serializer."""
 
     image = Base64ImageField(required=False, allow_null=True)
 
@@ -98,7 +99,7 @@ class RecipeMiniSerializer(serializers.ModelSerializer):
 
 
 class CustomAuthTokenSerializer(serializers.Serializer):
-    """custom token serializr."""
+    """Custom token serializr."""
 
     email = serializers.EmailField()
     password = serializers.CharField()
@@ -121,7 +122,7 @@ class CustomAuthTokenSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """basic user model serializer."""
+    """Basic user model serializer."""
 
     username = serializers.RegexField(
         regex=r"^[\w.@+-]+$",
@@ -132,14 +133,14 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
+        fields = (
             "id",
             "email",
             "username",
             "first_name",
             "last_name",
             "password",
-        ]
+        )
         extra_kwargs = {"password": {"write_only": True}}
 
     def create(self, validated_data):
@@ -165,14 +166,14 @@ class UserSerializer(serializers.ModelSerializer):
 class UserWithSubscriptionsSerializer(
     serializers.ModelSerializer, IsSubscribedMixin
 ):
-    """user with his subscriptions serializer."""
+    """User with his subscriptions serializer."""
 
     is_subscribed = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = [
+        fields = (
             "id",
             "email",
             "username",
@@ -180,7 +181,7 @@ class UserWithSubscriptionsSerializer(
             "last_name",
             "is_subscribed",
             "avatar",
-        ]
+        )
 
     def get_avatar(self, obj):
         if obj.avatar:
@@ -191,7 +192,7 @@ class UserWithSubscriptionsSerializer(
 class UserWithRecipesSerializer(
     serializers.ModelSerializer, IsSubscribedMixin
 ):
-    """user with recipes serializer."""
+    """User with recipes serializer."""
 
     is_subscribed = serializers.SerializerMethodField()
     recipes = serializers.SerializerMethodField()
@@ -249,7 +250,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
 class RecipeSerializer(
     serializers.ModelSerializer, FavoriteAndShoppingCartMixin
 ):
-    """full Recipe serializer for read."""
+    """Full Recipe serializer for read."""
 
     is_in_shopping_cart = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
@@ -279,7 +280,7 @@ class RecipeSerializer(
 class RecipeCreateUpdateSerializer(
     serializers.ModelSerializer, FavoriteAndShoppingCartMixin
 ):
-    """full Recipe serializer for POST and UPDATE."""
+    """Full Recipe serializer for POST and UPDATE."""
 
     is_in_shopping_cart = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
