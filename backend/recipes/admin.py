@@ -13,11 +13,10 @@ User = get_user_model()
 
 class IngredientsInlineFormset(BaseInlineFormSet):
     def clean_ingredients(self):
-        if len(self.cleaned_data["ingredients"]) < 1:
-            raise ValidationError(
-                _("Укажите хотя бы один ингредиент в рецепте")
-            )
-        return self.cleaned_data["ingredients"]
+        value = self.cleaned_data["ingredients"]
+        if value:
+            return value
+        raise ValidationError(_("Укажите хотя бы один ингредиент в рецепте"))
 
 
 class IngredientsInline(admin.TabularInline):
