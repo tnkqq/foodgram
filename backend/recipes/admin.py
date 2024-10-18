@@ -51,7 +51,6 @@ class RecipeAdmin(admin.ModelAdmin):
         "pub_at",
         "favorite_count",
     )
-    inlines = (IngredientsInline,)
 
     def favorite_count(self, obj):
         """Возвращает количество добавлений в избранное для рецепта."""
@@ -65,6 +64,8 @@ class RecipeAdmin(admin.ModelAdmin):
         return queryset
 
     favorite_count.short_description = "Количество добавлений в избранное"
+
+    inlines = (IngredientsInline,)
 
 
 @admin.register(RecipeIngredient)
