@@ -316,7 +316,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         url_path="shopping_cart",
         methods=("delete", "post"),
-        permission_classes=(permissions.IsAuthenticated),
+        permission_classes=(permissions.IsAuthenticated,),
     )
     def manage_shopping_cart(self, request, pk=None):
         """
